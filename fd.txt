@@ -1,0 +1,84 @@
+Search Results (50 images)
+    │
+    ▼ Sort by quality score
+    │
+    ├── Candidate 1
+    │     ├── Download ✓
+    │     ├── Basic validation ✓ (size, aspect, content)
+    │     ├── CLIP score: 0.31  ← above 0.25 threshold
+    │     └── ✅ AUTO-ACCEPT (skip BLIP)
+    │
+    ├── Candidate 1 (different example)
+    │     ├── Download ✓
+    │     ├── Basic validation ✓
+    │     ├── CLIP score: 0.19  ← between thresholds
+    │     ├── BLIP caption: "a slice of pepperoni pizza"
+    │     ├── BLIP overlap: 0.45
+    │     ├── Combined: 0.6×0.19 + 0.4×0.45 = 0.294
+    │     └── ✅ ACCEPT (combined > 0.25)
+    │
+    ├── Candidate 2
+    │     ├── Download ✓
+    │     ├── Basic validation ✓
+    │     ├── CLIP score: 0.08  ← below 0.15 threshold
+    │     └── ❌ AUTO-REJECT (skip BLIP)
+    │
+    ├── Candidate 3
+    │     ├── Download ✓
+    │     ├── Basic validation ✓
+    │     ├── CLIP score: 0.18
+    │     ├── BLIP caption: "a red car on a road"
+    │     ├── BLIP overlap: 0.0
+    │     ├── Combined: 0.108
+    │     └── ❌ REJECT (combined < 0.12)
+    │
+    └── ... up to max_verify_candidates (10)
+          │
+          └── If none accepted:
+                Use best-scoring candidate (if > reject threshold)
+                OR return failure → placeholder
+
+
+
+
+
+
+Search Results
+    │
+    ▼
+┌─────────────────────────────────────────┐
+│  STAGE 1: DOWNLOAD VERIFICATION         │
+│                                         │
+│  Image downloaded → CLIP + BLIP check   │
+│  "Does this image match the query?"     │
+│                                         │
+│  Thresholds: STRICT                     │
+│  CLIP accept: 0.25  reject: 0.15       │
+│  BLIP accept: 0.30  reject: 0.10       │
+│                                         │
+│  ❌ Fail → try next candidate           │
+│  ✅ Pass → continue pipeline            │
+└─────────────────────────────────────────┘
+    │
+    ▼
+  Background Removal → Compose Ad
+    │
+    ▼
+┌─────────────────────────────────────────┐
+│  STAGE 2: POST-COMPOSE VERIFICATION     │
+│                                         │
+│  Final ad.jpg → CLIP + BLIP check       │
+│  "Does the final ad still show the      │
+│   product correctly?"                   │
+│                                         │
+│  Thresholds: RELAXED (text overlays     │
+│  change the image)                      │
+│  CLIP accept: 0.18  reject: 0.08       │
+│  BLIP accept: 0.20  reject: 0.05       │
+│                                         │
+│  ❌ Fail → recompose WITHOUT bg removal │
+│  ✅ Pass → save final ad               │
+└─────────────────────────────────────────┘
+    │
+    ▼
+  Final ad_0001.jpg ✅

@@ -1,0 +1,40 @@
+ad_generator/
+├── main.py
+├── requirements.txt
+├── config/
+│   ├── __init__.py
+│   └── settings.py
+├── core/
+│   ├── __init__.py
+│   ├── pipeline.py
+│   ├── compositor.py
+│   └── progress.py
+├── search/
+│   ├── __init__.py
+│   ├── base.py
+│   ├── manager.py
+│   ├── google_engine.py
+│   ├── bing_engine.py
+│   └── duckduckgo_engine.py
+├── imaging/
+│   ├── __init__.py
+│   ├── downloader.py
+│   ├── background.py
+│   └── helpers.py
+├── utils/
+│   ├── __init__.py
+│   ├── exceptions.py
+│   ├── log_config.py
+│   ├── concurrency.py
+│   └── retry.py
+├── data/
+│   ├── input/
+│   │   └── main.csv
+│   ├── output/
+│   │   ├── images/
+│   │   └── ads_with_images.csv
+│   ├── temp/
+│   │   ├── workers/
+│   │   └── progress.json
+│   └── logs/
+│       └── ad_generator.log

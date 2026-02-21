@@ -1,0 +1,1 @@
+from search.manager import SearchManager
