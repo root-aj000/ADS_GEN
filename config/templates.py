@@ -97,6 +97,50 @@ TEMPLATE_STORY = AdTemplate(
     cta_font_size=60,
 )
 
+
+TEMPLATE_MINIMAL = AdTemplate(
+    name="minimal",
+    canvas_size=(1080, 1080),
+    product_max_size=(700, 700),
+    product_position_y=300,       # product pushed lower
+    title_position_y=30,          # title at very top
+    title_max_width=900,
+    title_anchor_x=540,           # centered horizontally
+    discount_y=950,
+    cta_y=1000,
+    cta_box=(340, 0, 740, 70),    # narrower CTA button
+    overlay_alpha=50,             # lighter overlay
+    title_font_size=55,
+    discount_font_size=90,
+    cta_font_size=45,
+)
+
+TEMPLATE_PRODUCT_LEFT = AdTemplate(
+    name="product_left",
+    canvas_size=(1080, 1080),
+    product_max_size=(450, 450),
+    product_position_y=300,
+    title_position_y=80,
+    title_max_width=450,
+    title_anchor_x=780,           # text on right half
+    discount_y=600,
+    cta_y=720,
+    cta_box=(580, 0, 1000, 80),   # CTA on right side
+    overlay_alpha=90,
+    title_font_size=55,
+    discount_font_size=75,
+    cta_font_size=45,
+)
+
+# Register them
+ALL_TEMPLATES["minimal"] = TEMPLATE_MINIMAL
+ALL_TEMPLATES["product_left"] = TEMPLATE_PRODUCT_LEFT
+ALL_TEMPLATES["centered"] = TEMPLATE_CENTERED
+ALL_TEMPLATES["left_aligned"] = TEMPLATE_LEFT_ALIGNED
+ALL_TEMPLATES["facebook"] = TEMPLATE_FACEBOOK
+ALL_TEMPLATES["story"] = TEMPLATE_STORY
+
+
 # ── registry ────────────────────────────────────────────────
 
 ALL_TEMPLATES = {
@@ -105,5 +149,3 @@ ALL_TEMPLATES = {
     "facebook":     TEMPLATE_FACEBOOK,
     "story":        TEMPLATE_STORY,
 }
-
-DEFAULT_TEMPLATE = "centered"
