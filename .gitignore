@@ -2,3 +2,5 @@
 .roo
 models
 .roomodes
+__pycache__
+*.pyc

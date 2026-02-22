@@ -71,8 +71,8 @@ TEMPLATE_FACEBOOK = AdTemplate(
     title_position_y=30,
     title_max_width=700,
     title_anchor_x=900,
-    discount_y=480,
-    cta_y=530,
+    discount_y=380,
+    cta_y=600,
     cta_box=(700, 0, 1100, 70),
     overlay_alpha=90,
     title_font_size=50,
@@ -133,12 +133,12 @@ TEMPLATE_PRODUCT_LEFT = AdTemplate(
 )
 
 # Register them
-ALL_TEMPLATES["minimal"] = TEMPLATE_MINIMAL
-ALL_TEMPLATES["product_left"] = TEMPLATE_PRODUCT_LEFT
-ALL_TEMPLATES["centered"] = TEMPLATE_CENTERED
-ALL_TEMPLATES["left_aligned"] = TEMPLATE_LEFT_ALIGNED
-ALL_TEMPLATES["facebook"] = TEMPLATE_FACEBOOK
-ALL_TEMPLATES["story"] = TEMPLATE_STORY
+# ALL_TEMPLATES["minimal"] = TEMPLATE_MINIMAL
+# ALL_TEMPLATES["product_left"] = TEMPLATE_PRODUCT_LEFT
+# ALL_TEMPLATES["centered"] = TEMPLATE_CENTERED
+# ALL_TEMPLATES["left_aligned"] = TEMPLATE_LEFT_ALIGNED
+# ALL_TEMPLATES["facebook"] = TEMPLATE_FACEBOOK
+# ALL_TEMPLATES["story"] = TEMPLATE_STORY
 
 
 # ── registry ────────────────────────────────────────────────
@@ -148,4 +148,6 @@ ALL_TEMPLATES = {
     "left_aligned": TEMPLATE_LEFT_ALIGNED,
     "facebook":     TEMPLATE_FACEBOOK,
     "story":        TEMPLATE_STORY,
-}
+    "minimal": TEMPLATE_MINIMAL,
+    "product_left" : TEMPLATE_LEFT_ALIGNED,
+    }

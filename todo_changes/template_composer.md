@@ -5,6 +5,7 @@
 Only **two methods** need modification. Every hardcoded number gets replaced by a template lookup:
 
 ```python
+
 def compose(
     self,
     product_path: Path,
