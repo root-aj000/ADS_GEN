@@ -25,6 +25,10 @@ class AdTemplate:
     title_font_size:    int
     discount_font_size: int
     cta_font_size:      int
+    effect_3d:          str
+    effect_strength:    int
+    use_reflection:     bool
+    use_3d_shadow:      bool
 
 
 # ── ready-made templates ────────────────────────────────────
@@ -44,6 +48,10 @@ TEMPLATE_CENTERED = AdTemplate(
     title_font_size=70,
     discount_font_size=100,
     cta_font_size=60,
+    effect_3d="hero_angle",
+    effect_strength=10,
+    use_reflection=True,
+    use_3d_shadow=True,
 )
 
 TEMPLATE_LEFT_ALIGNED = AdTemplate(
@@ -61,6 +69,10 @@ TEMPLATE_LEFT_ALIGNED = AdTemplate(
     title_font_size=60,
     discount_font_size=80,
     cta_font_size=50,
+    effect_3d="hero_angle",
+    effect_strength=10,
+    use_reflection=True,
+    use_3d_shadow=True,
 )
 
 TEMPLATE_FACEBOOK = AdTemplate(
@@ -78,6 +90,10 @@ TEMPLATE_FACEBOOK = AdTemplate(
     title_font_size=50,
     discount_font_size=70,
     cta_font_size=40,
+    effect_3d="hero_angle",
+    effect_strength=10,
+    use_reflection=True,
+    use_3d_shadow=True,
 )
 
 TEMPLATE_STORY = AdTemplate(
@@ -95,6 +111,10 @@ TEMPLATE_STORY = AdTemplate(
     title_font_size=80,
     discount_font_size=120,
     cta_font_size=60,
+    effect_3d="perspective_tilt",
+    effect_strength=10,
+    use_reflection=False,
+    use_3d_shadow=True,
 )
 
 
@@ -113,6 +133,10 @@ TEMPLATE_MINIMAL = AdTemplate(
     title_font_size=55,
     discount_font_size=90,
     cta_font_size=45,
+    effect_3d="hero_angle",
+    effect_strength=10,
+    use_reflection=True,
+    use_3d_shadow=True,
 )
 
 TEMPLATE_PRODUCT_LEFT = AdTemplate(
@@ -130,6 +154,10 @@ TEMPLATE_PRODUCT_LEFT = AdTemplate(
     title_font_size=55,
     discount_font_size=75,
     cta_font_size=45,
+    effect_3d="hero_angle",
+    effect_strength=10,
+    use_reflection=True,
+    use_3d_shadow=True,
 )
 
 # Register them
@@ -151,3 +179,4 @@ ALL_TEMPLATES = {
     "minimal": TEMPLATE_MINIMAL,
     "product_left" : TEMPLATE_LEFT_ALIGNED,
     }
+TEMPLATE_CYCLE = list(ALL_TEMPLATES.keys())

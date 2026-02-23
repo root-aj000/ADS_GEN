@@ -4,3 +4,6 @@ models
 .roomodes
 __pycache__
 *.pyc
+cache
+logs
+temp

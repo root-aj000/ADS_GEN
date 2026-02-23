@@ -6,14 +6,15 @@ The `imaging/` module handles all image-related operations in the Ad Generator p
 
 ```
 imaging/
-├── __init__.py          # Module exports
-├── downloader.py        # Image downloading and validation
-├── background.py        # Background removal using AI
-├── helpers.py           # Image utility functions
-├── cache.py             # SQLite-based image cache
-├── scorer.py            # Multi-factor quality scoring
-├── verifier.py          # CLIP/BLIP AI verification
-└── fonts.py             # Font loading and management
+├── __init__.py       # Module exports
+├── downloader.py     # Image downloading and validation
+├── background.py     # Background removal using AI
+├── helpers.py        # Image utility functions
+├── cache.py          # SQLite-based image cache
+├── scorer.py         # Multi-factor quality scoring
+├── verifier.py       # CLIP/BLIP AI verification
+├── fonts.py          # Font loading and management
+└── effects_3d.py     # 3D mesh generation from 2D images
 ```
 
 ## 🔄 Data Flow Diagram
@@ -68,6 +69,7 @@ imaging/
 | **ImageVerifier** | [`verifier.py`](imaging/verifier.py) | AI-powered image-text verification | ✅ Yes (singleton) |
 | **FontManager** | [`fonts.py`](imaging/fonts.py) | Loads and manages fonts for ad text | ✅ Yes |
 | **Helper Functions** | [`helpers.py`](imaging/helpers.py) | Visual content detection, color extraction | ✅ Yes |
+| **3DEffectsEngine** | [`effects_3d.py`](imaging/effects_3d.py) | Generates 3D meshes from 2D images | ✅ Yes |
 
 ## 🎯 Real-World Analogy
 
@@ -195,3 +197,4 @@ External Libraries:
 - **[Image Verifier](verifier.md)** - CLIP/BLIP AI verification
 - **[Background Removal](background.md)** - AI-powered background removal
 - **[Font Manager](fonts.md)** - Font loading and management
+- **[3D Effects Engine](effects-3d.md)** - AI-powered 3D mesh generation

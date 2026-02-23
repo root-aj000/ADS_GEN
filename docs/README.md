@@ -273,6 +273,7 @@ class AppConfig:
 - [Background Removal](imaging/background.md) - rembg processing
 - [Font Manager](imaging/fonts.md) - Font loading
 - [Image Helpers](imaging/helpers.md) - Utility functions
+- [**3D Effects Engine**](imaging/effects-3d.md) - AI-powered 3D mesh generation
 
 ### Utils Documentation
 - [Utils Overview](utils/overview.md) - Module overview

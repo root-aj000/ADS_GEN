@@ -2151,6 +2151,9 @@ from utils.text_cleaner import clean_query, is_valid_query
     # Add to imports at top of core/pipeline.py
 from cli.display import create_progress, format_row_status
 from cli.console import console
+from config.templates import ALL_TEMPLATES , TEMPLATE_CYCLE
+
+
 
 log = get_logger(__name__)
 
@@ -2359,6 +2362,7 @@ class AdPipeline:
         cfg.paths.ensure()
         cfg.validate()
 
+        
         self.df = pd.read_csv(cfg.paths.csv_input)
         log.info("CSV columns: %s", list(self.df.columns))
 
@@ -2712,6 +2716,10 @@ class AdPipeline:
             # ═══════════════════════════════════════════════
             if not self.cfg.dry_run:
                 nobg = tmp_nobg if (not use_orig and tmp_nobg.exists()) else None
+                # template 
+                template_name = TEMPLATE_CYCLE[idx % len(TEMPLATE_CYCLE)]
+                log.info("[%d] Using template: %s", idx + 1, template_name)
+
 
                 self.comp.compose(
                     product_path=dl_path,
@@ -2719,6 +2727,8 @@ class AdPipeline:
                     use_original=use_orig,
                     row=row,
                     output=out_path,
+                    template_name=template_name,
+                    
                 )
 
                 # ═══════════════════════════════════════════

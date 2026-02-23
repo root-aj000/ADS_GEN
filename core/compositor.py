@@ -344,56 +344,7 @@ class AdCompositor:
         return ImageFont.load_default()
 
     # ── public ──────────────────────────────────────────────
-    # def compose(
-    #     self,
-    #     product_path: Path,
-    #     nobg_path: Optional[Path],
-    #     use_original: bool,
-    #     row: pd.Series,
-    #     output: Path,
-    #     template_name: Optional[str] = None,
-    # ) -> Path:
-    #     """
-    #     Compose the final ad image.
-        
-    #     Args:
-    #         product_path: Path to the product image
-    #         nobg_path: Path to background-removed image (optional)
-    #         use_original: Whether to use original or bg-removed image
-    #         row: DataFrame row with ad text data
-    #         output: Output path for the composed ad
-    #         template_name: Optional template name for different layouts
-        
-    #     Returns:
-    #         Path to the saved ad image
-    #     """
-    #     src = product_path if use_original else (nobg_path or product_path)
-    #     product = Image.open(src).convert("RGBA")
-    #     bg_removed = not use_original and nobg_path is not None
-
-    #     bg = self._pick_colour(row, product_path)
-    #     canvas = self._gradient(CANVAS, bg, tuple(max(0, c - 40) for c in bg))
-
-    #     overlay = Image.new("RGBA", CANVAS, (0, 0, 0, 80))
-    #     canvas = Image.alpha_composite(canvas.convert("RGBA"), overlay)
-
-    #     product.thumbnail((650, 650), Image.Resampling.LANCZOS)
-    #     x = (CANVAS[0] - product.width) // 2
-    #     y = 220
-
-    #     if bg_removed:
-    #         self._shadow(canvas, product, x, y)
-    #     canvas.paste(product, (x, y), product)
-
-    #     canvas = canvas.convert("RGB")
-    #     self._text(canvas, row)
-    #     canvas.save(output, "JPEG", quality=95)
-
-    #     log.info("Composed → %s", output.name)
-    #     del product, canvas
-    #     gc.collect()
-    #     return output
-
+ 
 
     def compose(
         self,
@@ -403,13 +354,13 @@ class AdCompositor:
         row: pd.Series,
         output: Path,
         template_name: Optional[str] = None,
+        # 3d_effect: Optional[str] = None,
     ) -> Path:
 
         # ── pick template ───────────────────────────────────
-        from config.templates import ALL_TEMPLATES, DEFAULT_TEMPLATE
-
-        tpl = ALL_TEMPLATES.get(template_name or DEFAULT_TEMPLATE,
-                                ALL_TEMPLATES[DEFAULT_TEMPLATE])
+        from config.templates import ALL_TEMPLATES
+        from imaging.effects_3d import Product3DEffect
+        tpl = ALL_TEMPLATES.get(template_name)
 
         src = product_path if use_original else (nobg_path or product_path)
         product = Image.open(src).convert("RGBA")
@@ -417,18 +368,42 @@ class AdCompositor:
 
         bg = self._pick_colour(row, product_path)
         canvas_size = tpl.canvas_size
-        canvas = self._gradient(canvas_size, bg,
+        canvas = self._gradient(tpl.canvas_size, bg,
                                 tuple(max(0, c - 40) for c in bg))
 
         overlay = Image.new("RGBA", canvas_size, (0, 0, 0, tpl.overlay_alpha))
         canvas = Image.alpha_composite(canvas.convert("RGBA"), overlay)
 
         product.thumbnail(tpl.product_max_size, Image.Resampling.LANCZOS)
+
+        # ── 3-D EFFECT (NEW) ───────────────────────────────
+        if tpl.effect_3d != "none":
+            product = Product3DEffect.apply(
+                product,
+                effect_name=tpl.effect_3d,
+                strength=tpl.effect_strength,
+            )
+
+        if tpl.use_reflection:
+            product = Product3DEffect.add_reflection(product)
+        # ── END 3-D ────────────────────────────────────────
+
+
         x = (canvas_size[0] - product.width) // 2
         y = tpl.product_position_y
 
+        # ── SHADOW (UPGRADED) ──────────────────────────────
         if bg_removed:
-            self._shadow(canvas, product, x, y)
+            if tpl.use_3d_shadow:
+                Product3DEffect.perspective_shadow(
+                    product, canvas, x, y,
+                )
+            else:
+                self._shadow(canvas, product, x, y)
+         # ── END SHADOW ─────────────────────────────────────
+
+
+        
         canvas.paste(product, (x, y), product)
 
         canvas = canvas.convert("RGB")
@@ -439,6 +414,11 @@ class AdCompositor:
         del product, canvas
         gc.collect()
         return output
+    
+
+
+
+    
          # ── placeholder ─────────────────────────────────────────
     def placeholder(self, query: str, dest: Path) -> Path:
         """Create a placeholder image when download fails."""
@@ -503,61 +483,29 @@ class AdCompositor:
         except Exception:
             pass
 
-    # def _text(self, img: Image.Image, row: pd.Series) -> None:
-    #     draw = ImageDraw.Draw(img)
-
-    #     full  = str(row.get("text", ""))
-    #     money = str(row.get("monetary_mention", "")) if pd.notna(row.get("monetary_mention")) else ""
-    #     cta   = str(row.get("call_to_action", ""))   if pd.notna(row.get("call_to_action"))   else ""
-
-    #     main = full.replace(money, "").replace(cta, "").strip()
-
-    #     y = 50
-    #     for line in self._wrap(main[:80], self.font_title, 1000, draw):
-    #         draw.text((540, y), line, font=self.font_title, fill="white",
-    #                   anchor="mt", stroke_width=2, stroke_fill="black")
-    #         y += 80
-
-    #     dy, cy = 900, 920
-    #     if money and money.lower() != "nan" and money.strip():
-    #         draw.text((540, dy), money, font=self.font_discount,
-    #                   fill="#FFD700", anchor="mt",
-    #                   stroke_width=4, stroke_fill="black")
-    #         bb = draw.textbbox((540, dy), money,
-    #                            font=self.font_discount, anchor="mt")
-    #         cy = dy + (bb[3] - bb[1]) + 30
-
-    #     if cta and cta.lower() != "nan" and cta.strip():
-    #         h = 100
-    #         draw.rounded_rectangle([290, cy, 790, cy + h],
-    #                                radius=40, fill="white",
-    #                                outline="black", width=3)
-    #         draw.text((540, cy + h // 2), cta.upper(),
-    #                   font=self.font_cta, fill="black", anchor="mm")
-
 
     def _text(self, img: Image.Image, row: pd.Series, tpl) -> None:
         draw = ImageDraw.Draw(img)
-    
+
         # ── load fonts at template sizes ────────────────────
         bold_fonts = ["arialbd.ttf", "Arial Bold.ttf",
                       "DejaVuSans-Bold.ttf", "Roboto-Bold.ttf"]
         title_fonts = ["arial.ttf", "Arial.ttf",
                        "DejaVuSans.ttf", "Roboto-Regular.ttf"]
-    
+
         font_title    = self._try_load_font(title_fonts, tpl.title_font_size)
         font_discount = self._try_load_font(bold_fonts, tpl.discount_font_size)
         font_cta      = self._try_load_font(bold_fonts, tpl.cta_font_size)
-    
+
         # ── extract text parts ──────────────────────────────
         full  = str(row.get("text", ""))
         money = (str(row.get("monetary_mention", ""))
                  if pd.notna(row.get("monetary_mention")) else "")
         cta   = (str(row.get("call_to_action", ""))
                  if pd.notna(row.get("call_to_action")) else "")
-    
+
         main = full.replace(money, "").replace(cta, "").strip()
-    
+
         # ── title lines ─────────────────────────────────────
         y = tpl.title_position_y
         for line in self._wrap(main[:80], font_title, tpl.title_max_width, draw):
@@ -565,11 +513,11 @@ class AdCompositor:
                       font=font_title, fill="white", anchor="mt",
                       stroke_width=2, stroke_fill="black")
             y += tpl.title_font_size + 10
-    
+
         # ── discount ────────────────────────────────────────
         dy = tpl.discount_y
         cy = tpl.cta_y
-    
+
         if money and money.lower() != "nan" and money.strip():
             draw.text((tpl.title_anchor_x, dy), money,
                       font=font_discount, fill="#FFD700", anchor="mt",
@@ -577,7 +525,7 @@ class AdCompositor:
             bb = draw.textbbox((tpl.title_anchor_x, dy), money,
                                font=font_discount, anchor="mt")
             cy = dy + (bb[3] - bb[1]) + 30
-    
+
         # ── CTA button ──────────────────────────────────────
         if cta and cta.lower() != "nan" and cta.strip():
             cl, _, cr, ch = tpl.cta_box
@@ -586,7 +534,7 @@ class AdCompositor:
                                    outline="black", width=3)
             draw.text(((cl + cr) // 2, cy + ch // 2), cta.upper(),
                       font=font_cta, fill="black", anchor="mm")
-    
+
     @staticmethod
     def _wrap(
         text: str,
